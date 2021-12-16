@@ -1,13 +1,17 @@
 import * as tagged from "./tagged";
 
-export type Ok<T> = tagged.Tagged<"Ok"> & {
-  value: T;
+const tag = "Ok";
+
+export type T<O> = tagged.Tagged<typeof tag> & {
+  value: O;
 };
 
-export function from<T>(value: T): Ok<T> {
-  return tagged.from("Ok", value);
+export const T = tagged.from(tag);
+
+export function from<O>(value: O): T<O> {
+  return tagged.from(tag, value);
 }
 
-export function is<T>(value: tagged.Tagged): value is Ok<T> {
-  return tagged.is(value, "Ok");
+export function is<U>(value: tagged.Tagged): value is T<U> {
+  return tagged.is(value, tag);
 }

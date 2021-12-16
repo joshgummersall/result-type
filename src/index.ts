@@ -1,21 +1,26 @@
+import * as Result from "./result";
 import chain from "./chain";
 import chalk from "chalk";
 import fetch from "cross-fetch";
-import unwrap from "./unwrap";
-import { task, UnknownError } from "./task";
+import * as Task from "./task";
+import { match, instanceOf } from "ts-pattern";
 
-class WrappedJsonError extends Error {}
-class TypeCheckError extends Error {}
+class WrappedJsonError extends Error {
+  public readonly foo?: string;
+}
+class TypeCheckError extends Error {
+  public readonly bar?: string;
+}
 
 const getIpCountry = () => {
-  const resp = task(
-    () => fetch(/* https:// */ "ifconfig.co" /* /json */),
+  const resp = Task.of(
+    () => fetch(/* https:// */ "https://ifconfig.co/json" /* /json */),
     TypeError
   );
 
   const json = chain(
     resp,
-    task(
+    Task.of(
       (value) =>
         value
           .json()
@@ -26,15 +31,15 @@ const getIpCountry = () => {
 
   const ipCountry = chain(
     json,
-    task(async (json) => {
+    Task.of(async (json) => {
       const { ip, country } = json;
 
-      if (typeof ip !== "number") {
-        throw new TypeCheckError(`ip: expected number, received ${typeof ip}`);
-      }
-      // if (typeof ip !== "string") {
-      //   throw new TypeCheckError(`ip: expected string, received ${typeof ip}`);
+      // if (typeof ip !== "number") {
+      //   throw new TypeCheckError(`ip: expected number, received ${typeof ip}`);
       // }
+      if (typeof ip !== "string") {
+        throw new TypeCheckError(`ip: expected string, received ${typeof ip}`);
+      }
 
       if (typeof country !== "string") {
         throw new TypeCheckError(
@@ -42,7 +47,7 @@ const getIpCountry = () => {
         );
       }
 
-      throw new Error("unexpected!!!");
+      // throw new Error("unexpected!!!");
 
       return { ip, country };
     }, TypeCheckError)
@@ -54,36 +59,25 @@ const getIpCountry = () => {
 (async () => {
   const result = await getIpCountry();
 
-  const value = unwrap(
+  const value = Result.mapOr(
     result,
-    [
-      TypeError,
-      (error) => {
-        console.log(chalk.yellow("[ignoring]"), error);
-        return null;
-      },
-    ],
-    [
-      WrappedJsonError,
-      (error) => {
-        console.log(chalk.yellow("[ignoring]"), error);
-        return null;
-      },
-    ],
-    [
-      TypeCheckError,
-      (error) => {
-        console.log(chalk.yellow("[ignoring]"), error);
-        return null;
-      },
-    ],
-    [
-      UnknownError,
-      (error) => {
-        console.log(chalk.red("[throwing!]", error.caught));
-        throw error.caught;
-      },
-    ]
+    (err) =>
+      match(err)
+        .with(instanceOf(TypeError), (err) => {
+          console.log(chalk.yellow("TypeError"), err.message);
+          return null;
+        })
+        .with(instanceOf(WrappedJsonError), (err) => {
+          console.log(chalk.yellow("WrappedJsonError"), err.message);
+          return null;
+        })
+        .with(instanceOf(TypeCheckError), (err) => {
+          console.log(chalk.yellow("TypeCheckError"), err.message);
+          return null;
+        })
+        .otherwise((err) => {
+          throw err;
+        })
   );
 
   console.log(

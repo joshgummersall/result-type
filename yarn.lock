@@ -138,6 +138,11 @@ ts-node@^10.4.0:
     make-error "^1.1.1"
     yn "3.1.1"
 
+ts-pattern@3.3.4-rc.1:
+  version "3.3.4-rc.1"
+  resolved "https://registry.yarnpkg.com/ts-pattern/-/ts-pattern-3.3.4-rc.1.tgz#25ce162ba89910f6637cc2a7cadd591cc9f81e83"
+  integrity sha512-8sqXfjG0M2+TD7ppWDJPMgjiHxFMhWDrhaYE7otxFleZauJmiuhnasM/C2scZ5RCp1+ppQpFnqb9Nxf2ipO3uQ==
+
 typescript@^4.5.2:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
