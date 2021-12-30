@@ -1,7 +1,7 @@
 import * as err from "./err";
 import { Task } from "./task";
 
-export default function chain<FT, FE, ST, SE>(
+export default function pipe<FT, FE, ST, SE>(
   left: Task<[], FT, FE>,
   right: Task<[FT], ST, SE>
 ): Task<[], ST, FE | SE> {
