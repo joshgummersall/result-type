@@ -15,7 +15,7 @@ class TypeCheckError extends Error {}
 const getIpCountry = () => {
   const resp = Task.of(
     () =>
-      fetch(/* https:// */ "ifconfig.co/json" /* /json */).catch(
+      fetch(/* https:// */ "ifconfig.co" /* /json */).catch(
         (reason) => Promise.reject(new FetchError(reason))
       ),
     FetchError
