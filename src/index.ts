@@ -1,6 +1,7 @@
 import * as Err from "./err";
 import * as Ok from "./ok";
 import * as Task from "./task";
+import * as Result from "./result";
 import pipe from "./pipe";
 
 import chalk from "chalk";
@@ -57,6 +58,15 @@ const getIpCountry = () => {
 };
 
 (async () => {
+  // note: no try/catch, because any other error that happens is _truly_
+  // exceptional and should crash the program
+  const message = Result.map(await getIpCountry(), {
+    ok: (value) => `user IP: ${value.ip}, country: ${value.country}`,
+    err: (err) => `error: could not find IP (${err})`,
+  });
+
+  console.log(message);
+
   const result = await getIpCountry();
 
   match(result)
