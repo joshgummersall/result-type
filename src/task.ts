@@ -19,7 +19,7 @@ export function of<A extends unknown[], T, E>(
       // If the error thrown matches a constructor in the allow list, coerce
       // to Err<E>, otherwise this is unexpected and should crash the program
       if (Ctor) {
-        return Err.from(error as E);
+        return Err.from(error as E); // note: we know error instanceof Ctor, as casting safe
       } else {
         throw error;
       }
