@@ -35,9 +35,11 @@ const getIpCountry = () => {
     Task.of(async (json) => {
       const { ip, country } = json;
 
-      // if (typeof ip !== "number") {
-      //   throw new TypeCheckError(`ip: expected number, received ${typeof ip}`);
-      // }
+      // Note: comment out to fix
+      if (typeof ip !== "number") {
+        throw new TypeCheckError(`ip: expected number, received ${typeof ip}`);
+      }
+
       if (typeof ip !== "string") {
         throw new TypeCheckError(`ip: expected string, received ${typeof ip}`);
       }
@@ -48,6 +50,7 @@ const getIpCountry = () => {
         );
       }
 
+      // Note: uncomment to simulate unexpected, terminal error
       // throw new Error("unexpected!!!");
 
       return { ip, country };
@@ -58,16 +61,16 @@ const getIpCountry = () => {
 };
 
 (async () => {
+  const result = await getIpCountry();
+
   // note: no try/catch, because any other error that happens is _truly_
   // exceptional and should crash the program
-  const message = Result.map(await getIpCountry(), {
+  const message = Result.map(result, {
     ok: (value) => `user IP: ${value.ip}, country: ${value.country}`,
     err: (err) => `error: could not find IP (${err})`,
   });
 
   console.log(message);
-
-  const result = await getIpCountry();
 
   match(result)
     .with(Ok.T, ({ value }) => {
@@ -83,13 +86,10 @@ const getIpCountry = () => {
           console.log(chalk.yellow("FetchError"), err.message);
         })
         .with(instanceOf(JsonError), (err) => {
-          console.log(chalk.yellow("WrappedJsonError"), err.message);
+          console.log(chalk.yellow("JsonError"), err.message);
         })
         .with(instanceOf(TypeCheckError), (err) => {
           console.log(chalk.yellow("TypeCheckError"), err.message);
-        })
-        .with(instanceOf(Error), (err) => {
-          console.error(err);
         })
         .exhaustive();
     })
