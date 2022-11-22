@@ -50,8 +50,8 @@ const getIpCountry = () => {
         );
       }
 
-      // Note: uncomment to simulate unexpected, terminal error
-      // (10 as any).toUpperCase();
+      // Note: comment out to fix
+      (10 as any).toUpperCase();
 
       return { ip, country };
     }, TypeCheckError)
