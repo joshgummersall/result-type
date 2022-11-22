@@ -51,7 +51,7 @@ const getIpCountry = () => {
       }
 
       // Note: uncomment to simulate unexpected, terminal error
-      // throw new Error("unexpected!!!");
+      // (10 as any).toUpperCase();
 
       return { ip, country };
     }, TypeCheckError)
@@ -72,26 +72,26 @@ const getIpCountry = () => {
 
   console.log(message);
 
-  match(result)
-    .with(Ok.T, ({ value }) => {
-      console.log(
-        `${chalk.green("ip")}: ${value?.ip}, ${chalk.green("country")}: ${
-          value?.country
-        }`
-      );
-    })
-    .with(Err.T, ({ value: err }) => {
-      match(err)
-        .with(instanceOf(FetchError), (err) => {
-          console.log(chalk.yellow("FetchError"), err.message);
-        })
-        .with(instanceOf(JsonError), (err) => {
-          console.log(chalk.yellow("JsonError"), err.message);
-        })
-        .with(instanceOf(TypeCheckError), (err) => {
-          console.log(chalk.yellow("TypeCheckError"), err.message);
-        })
-        .exhaustive();
-    })
-    .exhaustive();
+  // match(result)
+  //   .with(Ok.T, ({ value }) => {
+  //     console.log(
+  //       `${chalk.green("ip")}: ${value?.ip}, ${chalk.green("country")}: ${
+  //         value?.country
+  //       }`
+  //     );
+  //   })
+  //   .with(Err.T, ({ value: err }) => {
+  //     match(err)
+  //       .with(instanceOf(FetchError), (err) => {
+  //         console.log(chalk.yellow("FetchError"), err.message);
+  //       })
+  //       .with(instanceOf(JsonError), (err) => {
+  //         console.log(chalk.yellow("JsonError"), err.message);
+  //       })
+  //       .with(instanceOf(TypeCheckError), (err) => {
+  //         console.log(chalk.yellow("TypeCheckError"), err.message);
+  //       })
+  //       .exhaustive();
+  //   })
+  //   .exhaustive();
 })();
