@@ -15,8 +15,10 @@ class TypeCheckError extends Error {}
 const getIpCountry = () => {
   const resp = Task.of(
     () =>
-      fetch(/* https:// */ "ifconfig.co" /* /json */).catch(
-        (reason) => Promise.reject(new FetchError(reason))
+      fetch(/* https:// */ "ifconfig.c0" /* /json */).catch(
+        (reason) => {
+          throw new FetchError(reason)
+        }
       ),
     FetchError
   );
@@ -25,7 +27,11 @@ const getIpCountry = () => {
     resp,
     Task.of(
       (value) =>
-        value.json().catch((reason) => Promise.reject(new JsonError(reason))),
+        value.json().catch(
+          (reason) => {
+            throw new JsonError(reason)
+          }
+        ),
       JsonError
     )
   );
@@ -67,7 +73,7 @@ const getIpCountry = () => {
   // exceptional and should crash the program
   const message = Result.map(result, {
     ok: (value) => `user IP: ${value.ip}, country: ${value.country}`,
-    err: (err) => `error: could not find IP (${err})`,
+    err: (err) => `error: could not fetch user IP/country (${err})`,
   });
 
   console.log(message);
